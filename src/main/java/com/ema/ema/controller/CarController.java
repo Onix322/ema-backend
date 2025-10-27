@@ -3,6 +3,7 @@ package com.ema.ema.controller;
 import com.ema.ema.handler.responseHandler.ResponseHandler;
 import com.ema.ema.models.car.Car;
 import com.ema.ema.models.response.Response;
+
 import com.ema.ema.service.CarService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -31,12 +32,17 @@ public class CarController {
     }
 
     @GetMapping("/get/{carId}")
-    public Car getById(@PathVariable UUID carId){
-        return null;
+    public ResponseEntity<Response<Car>> getById(@PathVariable UUID carId){
+        return ResponseHandler.ok(this.carService.getById(carId));
+    }
+
+    @PutMapping("/state")
+    public ResponseEntity<Response<Car>> changeState(@RequestBody Car car){
+        return ResponseHandler.ok(this.carService.changeState(car));
     }
 
     @DeleteMapping("/delete/{carID}")
-    public boolean delete(@PathVariable(value = "carID") UUID carId) {
-        return false;
+    public ResponseEntity<Response<Boolean>> delete(@PathVariable(value = "carID") UUID carId) {
+        return ResponseHandler.ok(this.carService.delete(carId));
     }
 }

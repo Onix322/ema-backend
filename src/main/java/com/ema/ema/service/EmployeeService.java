@@ -1,7 +1,6 @@
 package com.ema.ema.service;
 
 import com.ema.ema.exceptions.CannotBeCreated;
-import com.ema.ema.exceptions.CannotBeModified;
 import com.ema.ema.exceptions.NotFoundException;
 import com.ema.ema.models.car.Car;
 import com.ema.ema.models.employee.Employee;
@@ -34,6 +33,14 @@ public class EmployeeService {
         }
     }
 
+    public Employee update(Employee employee) {
+        if (employee.getUuid() == null) {
+            throw new RuntimeException("UUID must not be null");
+        }
+
+        return this.er.saveAndFlush(employee);
+    }
+
     public Employee[] getAll() {
         return this.er.findAll()
                 .toArray(Employee[]::new);
@@ -47,7 +54,6 @@ public class EmployeeService {
     @Transactional
     public boolean delete(UUID uuid) {
         Employee employee = this.getById(uuid);
-
         try {
             this.unassignCar(employee);
             this.er.deleteById(uuid);
@@ -62,38 +68,43 @@ public class EmployeeService {
         return this.er.existsByBadge(employee.getBadge());
     }
 
-//    public Employee assignCar(UUID employeeID, UUID carID) {
-//        Employee employee = this.getById(employeeID);
-//        Car car = this.cs.getById(carID);
-//        car.setEmployee(employee);
-//
-//        try {
-//            return this.er.saveAndFlush(employee);
-//        } catch (Exception e) {
-//            System.err.println(e.getMessage());
-//            throw new CannotBeModified("Entity cannot be modified!");
-//        }
-//    }
+    public Employee unassignCar(UUID employeeID) {
+        return this.unassignCar(this.getById(employeeID));
+    }
 
-    public Employee unassignCar(Employee employee){
+    public Employee unassignCar(Employee employee) {
         Car car = employee.getCar();
-        if(car != null){
-            car.setEmployee(null);
-            employee.setCar(null);
-            this.cs.update(car);
-            this.er.save(employee);
-            return employee;
+        if (car != null) {
+            try {
+                car.setEmployee(null);
+                this.cs.update(car);
+                employee.setCar(null);
+                return employee;
+            } catch (Exception e) {
+                throw new RuntimeException("Car cannot be unassign");
+            }
         }
         return employee;
     }
 
-    public Employee assignCar(UUID employeeId, UUID carId){
-        Employee employee = this.getById(employeeId);
-        Car car = this.cs.getById(carId);
-        car.setEmployee(employee);
-        employee.setCar(car);
+    public Employee assignCar(UUID employeeId, UUID carId) {
+        try {
+            Employee employee = this.getById(employeeId);
+            Car car = this.cs.getById(carId);
+            car.setEmployee(employee);
+            this.cs.update(car);
+            employee.setCar(car);
+            return employee;
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            throw new RuntimeException("Car cannot be assign");
+        }
+    }
 
-        this.cs.update(car);
-        return this.er.save(employee);
+    public Employee autoAssignCar(UUID employeeID) {
+        Car[] cars = this.cs.getAllAvailable();
+        Car car = cars[(int) (Math.random() * cars.length)];
+        System.out.println("!!!!!!!!!!!!!!!" + car);
+        return this.assignCar(employeeID, car.getUuid());
     }
 }

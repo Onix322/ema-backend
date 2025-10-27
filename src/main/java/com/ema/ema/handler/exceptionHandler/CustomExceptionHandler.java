@@ -25,12 +25,12 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<Response<Object>> notFound() {
-        return ResponseHandler.fail(HttpStatus.NOT_FOUND.value(), "Entity not found!");
+    public ResponseEntity<Response<Object>> notFound(NotFoundException e) {
+        return ResponseHandler.fail(HttpStatus.NOT_FOUND.value(), e.getMessage());
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<Response<Object>> internal() {
-        return ResponseHandler.fail(500, "Internal exception!");
+    public ResponseEntity<Response<Object>> internal(RuntimeException e) {
+        return ResponseHandler.fail(500, e.getMessage());
     }
 }
