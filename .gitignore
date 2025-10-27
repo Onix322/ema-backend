@@ -176,5 +176,6 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,intellij,linux,windows
 
-target/
-.idea/
+target
+.idea
+.gitignore
