@@ -17,16 +17,13 @@ public class CarService {
         this.carRepository = carRepository;
     }
 
+    // CREATE
+
     public Car create(Car car) {
         return this.carRepository.save(car);
     }
 
-    public Car update(Car car) {
-        if (car.getUuid() == null) {
-            throw new RuntimeException("UUID must not be null");
-        }
-        return this.carRepository.saveAndFlush(car);
-    }
+    // DELETE
 
     public boolean delete(UUID carID) {
         try {
@@ -41,6 +38,8 @@ public class CarService {
         }
     }
 
+    // READ
+
     public Car getById(UUID carId) {
         return this.carRepository.findById(carId)
                 .orElseThrow(() -> new NotFoundException("Car entity not found!"));
@@ -53,6 +52,15 @@ public class CarService {
 
     public Car[] getAllAvailable(){
         return this.carRepository.findAllByCarState(CarState.AVAILABLE);
+    }
+
+    // UPDATE - MODIFY
+
+    public Car update(Car car) {
+        if (car.getUuid() == null) {
+            throw new RuntimeException("UUID must not be null");
+        }
+        return this.carRepository.saveAndFlush(car);
     }
 
     public Car changeState(Car car) {

@@ -21,6 +21,8 @@ public class EmployeeService {
         this.cs = cs;
     }
 
+    // CREATE
+
     public Employee create(Employee employee) {
         if (employee.getBadge() != null && this.exists(employee)) {
             throw new CannotBeCreated("Employee with existing badge");
@@ -33,13 +35,7 @@ public class EmployeeService {
         }
     }
 
-    public Employee update(Employee employee) {
-        if (employee.getUuid() == null) {
-            throw new RuntimeException("UUID must not be null");
-        }
-
-        return this.er.saveAndFlush(employee);
-    }
+    // READ
 
     public Employee[] getAll() {
         return this.er.findAll()
@@ -51,21 +47,14 @@ public class EmployeeService {
                 .orElseThrow(() -> new NotFoundException("Employee not found"));
     }
 
-    @Transactional
-    public boolean delete(UUID uuid) {
-        Employee employee = this.getById(uuid);
-        try {
-            this.unassignCar(employee);
-            this.er.deleteById(uuid);
-            return true;
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            throw new RuntimeException("Cannot be deleted");
-        }
-    }
+    // UPDATE -- MODIFY
 
-    public boolean exists(Employee employee) {
-        return this.er.existsByBadge(employee.getBadge());
+    public Employee update(Employee employee) {
+        if (employee.getUuid() == null) {
+            throw new RuntimeException("UUID must not be null");
+        }
+
+        return this.er.saveAndFlush(employee);
     }
 
     public Employee unassignCar(UUID employeeID) {
@@ -107,4 +96,24 @@ public class EmployeeService {
         System.out.println("!!!!!!!!!!!!!!!" + car);
         return this.assignCar(employeeID, car.getUuid());
     }
+
+    // DELETE
+
+    @Transactional
+    public boolean delete(UUID uuid) {
+        Employee employee = this.getById(uuid);
+        try {
+            this.unassignCar(employee);
+            this.er.deleteById(uuid);
+            return true;
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            throw new RuntimeException("Cannot be deleted");
+        }
+    }
+
+    public boolean exists(Employee employee) {
+        return this.er.existsByBadge(employee.getBadge());
+    }
+
 }
