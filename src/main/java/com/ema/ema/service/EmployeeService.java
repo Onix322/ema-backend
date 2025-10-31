@@ -23,12 +23,19 @@ public class EmployeeService {
 
     // CREATE
 
-    public Employee create(Employee employee) {
-        if (employee.getBadge() != null && this.exists(employee)) {
+    public Employee create(Employee initialEmployee) {
+        if (initialEmployee.getBadge() != null && this.exists(initialEmployee)) {
             throw new CannotBeCreated("Employee with existing badge");
         }
         try {
-            return this.er.save(employee);
+            Employee savedEmployee = this.er.saveAndFlush(initialEmployee);
+            Car employeeCar = initialEmployee.getCar();
+
+            if (employeeCar != null) {
+                employeeCar.setEmployee(savedEmployee);
+                this.assignCar(savedEmployee.getUuid(), employeeCar.getUuid());
+            }
+            return savedEmployee;
         } catch (Exception e) {
             System.err.println(e.getMessage());
             throw new CannotBeCreated("Entity cannot be created!");
@@ -53,7 +60,15 @@ public class EmployeeService {
         if (employee.getUuid() == null) {
             throw new RuntimeException("UUID must not be null");
         }
-
+        System.out.println(employee);
+        Car employeeCar = employee.getCar();
+        if (employeeCar == null) {
+            this.unassignCar(employee.getUuid());
+        } else {
+            employeeCar.setEmployee(employee);
+            this.unassignCar(employee.getUuid());
+            this.assignCar(employee.getUuid(), employeeCar.getUuid());
+        }
         return this.er.saveAndFlush(employee);
     }
 

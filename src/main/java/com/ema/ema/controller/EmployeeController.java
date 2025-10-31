@@ -20,42 +20,42 @@ public class EmployeeController {
     }
 
     @PostMapping("/create")
-    private ResponseEntity<Response<Object>> create(@RequestBody Employee employee){
+    private ResponseEntity<Response<Employee>> create(@RequestBody Employee employee) {
         return ResponseHandler.created(this.es.create(employee));
     }
 
     @GetMapping("/get")
-    private ResponseEntity<Response<Object>> getAll(){
+    private ResponseEntity<Response<Employee[]>> getAll() {
         return ResponseHandler.ok(this.es.getAll());
     }
 
     @GetMapping("/get/{employeeID}")
-    private ResponseEntity<Response<Object>> get(@PathVariable UUID employeeID){
+    private ResponseEntity<Response<Employee>> get(@PathVariable UUID employeeID) {
         return ResponseHandler.ok(this.es.getById(employeeID));
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Response<Employee>> update(@RequestBody Employee employee){
+    public ResponseEntity<Response<Employee>> update(@RequestBody Employee employee) {
         return ResponseHandler.ok(this.es.update(employee));
     }
 
     @DeleteMapping("/delete/{employeeID}")
-    private ResponseEntity<Response<Object>> delete(@PathVariable UUID employeeID){
+    private ResponseEntity<Response<Boolean>> delete(@PathVariable UUID employeeID) {
         return ResponseHandler.ok(this.es.delete(employeeID));
     }
 
     @PatchMapping("/assign/{employeeID}/{carID}")
-    public ResponseEntity<Response<Employee>> assignCar(@PathVariable UUID employeeID, @PathVariable UUID carID){
+    public ResponseEntity<Response<Employee>> assignCar(@PathVariable UUID employeeID, @PathVariable UUID carID) {
         return ResponseHandler.ok(this.es.assignCar(employeeID, carID));
     }
 
     @PatchMapping("/unassign/{employeeID}")
-    public ResponseEntity<Response<Employee>> unassignCurrentCar(@PathVariable UUID employeeID){
+    public ResponseEntity<Response<Employee>> unassignCurrentCar(@PathVariable UUID employeeID) {
         return ResponseHandler.ok(this.es.unassignCar(employeeID));
     }
 
     @PatchMapping("/assign/auto/{employeeID}")
-    public ResponseEntity<Response<Employee>> autoAssignCar(@PathVariable UUID employeeID){
+    public ResponseEntity<Response<Employee>> autoAssignCar(@PathVariable UUID employeeID) {
         return ResponseHandler.ok(this.es.autoAssignCar(employeeID));
     }
 }

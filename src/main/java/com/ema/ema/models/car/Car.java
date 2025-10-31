@@ -8,33 +8,33 @@ import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 import java.util.UUID;
 
-@Table(name = "car")
-@Entity
-public class Car {
-    @Id
-    @GeneratedValue(generator = "uuid")
-    private UUID uuid;
+    @Table(name = "car")
+    @Entity
+    public class Car {
+        @Id
+        @GeneratedValue(generator = "uuid")
+        private UUID uuid;
 
-    @Column(name = "numberPlate", nullable = false)
-    @NotNull(message = "numberPalate column cannot be null. Is mandatory")
-    private String numberPlate;
+        @Column(name = "numberPlate", nullable = false)
+        @NotNull(message = "numberPalate column cannot be null. Is mandatory")
+        private String numberPlate;
 
-    @Column(name = "vin")
-    @NotNull(message = "vin column cannot be null. Is mandatory")
-    private String vin;
+        @Column(name = "vin")
+        @NotNull(message = "vin column cannot be null. Is mandatory")
+        private String vin;
 
-    @Column(name = "manufacturer")
-    @NotNull(message = "manufacturer column cannot be null. Is mandatory")
-    private String manufacturer;
+        @Column(name = "manufacturer")
+        @NotNull(message = "manufacturer column cannot be null. Is mandatory")
+        private String manufacturer;
 
-    @Column(name = "carState")
-    @NotNull(message = "carState column cannot be null. Is mandatory")
-    private CarState carState;
+        @Column(name = "carState")
+        @NotNull(message = "carState column cannot be null. Is mandatory")
+        private CarState carState;
 
-    @OneToOne
-    @JoinColumn(name = "employee_id")
-    @JsonIgnore
-    private Employee employee;
+        @OneToOne
+        @JoinColumn(name = "employee_id")
+        @JsonIgnore
+        private Employee employee;
 
     public Car(UUID uuid, String numberPlate, String vin, String manufacturer, CarState carState) {
         this.uuid = uuid;
@@ -122,7 +122,7 @@ public class Car {
                 ", vin='" + vin + '\'' +
                 ", manufacturer='" + manufacturer + '\'' +
                 ", carState=" + carState +
-                ", person=" + employee +
+                ", employee=" + employee +
                 '}';
     }
 }
