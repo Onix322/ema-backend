@@ -3,6 +3,7 @@ package com.ema.ema.service;
 import com.ema.ema.exceptions.CannotBeCreated;
 import com.ema.ema.exceptions.NotFoundException;
 import com.ema.ema.models.car.Car;
+import com.ema.ema.models.car.CarState;
 import com.ema.ema.models.employee.Employee;
 import com.ema.ema.repository.EmployeeRepository;
 import jakarta.transaction.Transactional;
@@ -81,6 +82,7 @@ public class EmployeeService {
         if (car != null) {
             try {
                 car.setEmployee(null);
+                car.setCarState(CarState.AVAILABLE);
                 this.cs.update(car);
                 employee.setCar(null);
                 return employee;
@@ -96,6 +98,7 @@ public class EmployeeService {
             Employee employee = this.getById(employeeId);
             Car car = this.cs.getById(carId);
             car.setEmployee(employee);
+            car.setCarState(CarState.ASSIGNED);
             this.cs.update(car);
             employee.setCar(car);
             return employee;
@@ -108,7 +111,6 @@ public class EmployeeService {
     public Employee autoAssignCar(UUID employeeID) {
         Car[] cars = this.cs.getAllAvailable();
         Car car = cars[(int) (Math.random() * cars.length)];
-        System.out.println("!!!!!!!!!!!!!!!" + car);
         return this.assignCar(employeeID, car.getUuid());
     }
 

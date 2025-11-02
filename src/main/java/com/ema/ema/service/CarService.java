@@ -18,24 +18,8 @@ public class CarService {
     }
 
     // CREATE
-
     public Car create(Car car) {
         return this.carRepository.save(car);
-    }
-
-    // DELETE
-
-    public boolean delete(UUID carID) {
-        try {
-            Car car = this.getById(carID);
-            car.setEmployee(null);
-            this.update(car);
-            this.carRepository.deleteById(carID);
-            return true;
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            throw new RuntimeException("Cannot be deleted");
-        }
     }
 
     // READ
@@ -50,7 +34,7 @@ public class CarService {
                 .toArray(Car[]::new);
     }
 
-    public Car[] getAllAvailable(){
+    public Car[] getAllAvailable() {
         return this.carRepository.findAllByCarState(CarState.AVAILABLE);
     }
 
@@ -68,5 +52,16 @@ public class CarService {
         carFound.setCarState(car.getCarState());
 
         return this.update(carFound);
+    }
+
+    // DELETE
+    public boolean delete(UUID carID) {
+        try {
+            this.carRepository.deleteById(carID);
+            return true;
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            throw new RuntimeException("Cannot be deleted");
+        }
     }
 }
