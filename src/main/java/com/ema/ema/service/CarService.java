@@ -34,7 +34,7 @@ public class CarService {
                 .toArray(Car[]::new);
     }
 
-    public Car[] getAllAvailable() {
+    public Car[] getAllAvailable(){
         return this.carRepository.findAllByCarState(CarState.AVAILABLE);
     }
 
